@@ -122,12 +122,18 @@ try {
 
     //check page
     const goodsList = document.querySelector('.goods__list');
-    const goodsTitle = document.querySelector('.goods__title');
-    /*const navigationLink = document.querySelectorAll('.navigation__link');*/
     
     if (!goodsList) {
         throw 'This is not a goods page'
     }
+
+    const goodsTitle = document.querySelector('.goods__title');
+
+    const changeTitle = () => {
+        goodsTitle.textContent = document.querySelector(`[href*="#${hash}"]`).textContent;
+    };
+
+    
 
     //create the element from db
     const createCard = ({ id, preview, cost, brand, name, sizes }) => {
@@ -168,17 +174,6 @@ try {
         
     };
 
-    //change title
-    function changeTitle() {
-        
-        if (hash === 'women') {
-            goodsTitle.textContent = 'Женщинам';
-        } else if (hash === 'men') {
-            goodsTitle.textContent = 'Мужчинам';
-        } else if (hash === 'kids') {
-            goodsTitle.textContent = 'Детям';
-        }
-    };
 
     window.addEventListener('hashchange', () => {
         hash = location.hash.substring(1);
@@ -187,10 +182,9 @@ try {
         changeTitle();
     });
 
+    changeTitle();
     getGoods(renderGoodsList, hash);
 
 } catch (err) {
     console.warn(err);
 }
-
-changeTitle();
