@@ -25,6 +25,7 @@ headerCityButton.addEventListener('click', () => {
 updateLocation();
 
 /* =============== SCROLL BLOCKED =============================== */
+
 const disabledScroll = () => {
 
     if (document.disableScroll) return;
@@ -60,6 +61,7 @@ const enabledScroll = () => {
 };
 
 /* =============== CART MODAL WINDOW =============================== */
+
 const cartModalOpen = () => {
     cartOverlay.classList.add('cart-overlay-open');
     disabledScroll();
@@ -89,6 +91,7 @@ document.addEventListener('keydown', function(e) {
     });
 
 /* =============== GET DATA FROM SERVER /db.json / =============================== */
+
 const getData = async () => {
     const data = await fetch('db.json');
 
@@ -99,13 +102,13 @@ const getData = async () => {
     }
 };
 
-const getGoods = (callback, value) => {
+const getGoods = (callback, prop, value) => {
 
         //output data in a convenient format
         getData()
         .then(data => {
             if (value) {
-                callback(data.filter(item => item.category === value));
+                callback(data.filter(item => item[prop] === value));
             } else {
                 callback(data);
             }
@@ -116,7 +119,7 @@ const getGoods = (callback, value) => {
 };
 
 
-/* =============== CREATE GOODS PAGE FROM db =============================== */
+/* =============== CREATE A GOODS PAGE FROM db =============================== */
 
 try {
 
@@ -177,13 +180,83 @@ try {
 
     window.addEventListener('hashchange', () => {
         hash = location.hash.substring(1);
-        console.log(hash);
-        getGoods(renderGoodsList, hash);
+        getGoods(renderGoodsList, 'category', hash);
         changeTitle();
     });
 
     changeTitle();
-    getGoods(renderGoodsList, hash);
+    getGoods(renderGoodsList, 'category', hash);
+
+} catch (err) {
+    console.warn(err);
+}
+
+/* =============== CREATE A SINGLE GOOD PAGE =============================== */
+
+try {
+    if (!document.querySelector('.card-good')) {
+        throw 'This is not a single good page!';
+    }
+
+    const cardGoodImage = document.querySelector('.card-good__image');
+    const cardGoodBrand = document.querySelector('.card-good__brand');
+    const cardGoodTitle = document.querySelector('.card-good__title');
+    const cardGoodPrice = document.querySelector('.card-good__price');
+    const cardGoodColor = document.querySelector('.card-good__color');
+    const cardGoodSelectWrapper = document.querySelectorAll('.card-good__select__wrapper');
+    const cardGoodColorList = document.querySelector('.card-good__color-list');
+    const cardGoodSizes = document.querySelector('.card-good__sizes');
+    const cardGoodSizesList = document.querySelector('.card-good__sizes-list');
+    const cardGoodBuy = document.querySelector('.card-good__buy');
+
+    const generateList = (data) => data.reduce((html, item, i) => html + 
+        `<li class="card-good__select-item"data-id="${i}">${item}</li>`, '');
+
+    const renderCardGood = ([{ brand, name, cost, color, sizes, photo }]) => {
+
+        cardGoodImage.src = `goods-image/${photo}`;
+        cardGoodImage.alt = `${brand} ${name}`
+        cardGoodBrand.textContent = brand;
+        cardGoodTitle.textContent = name;
+        cardGoodPrice.textContent = `${cost} ₽`;
+
+        if (color) {
+            cardGoodColor.textContent = color[0];
+            cardGoodColor.dataset.id = 0;
+            cardGoodColorList.innerHTML = generateList(color);
+            } else {
+                cardGoodColor.style.display = 'none';
+            }
+
+        if (sizes) {
+            cardGoodSizes.textContent = sizes[0];
+            cardGoodSizes.dataset.id = 0;
+            cardGoodSizesList.innerHTML = generateList(sizes);
+            }  else {
+                cardGoodSizes.style.display = 'none';
+            }
+        };
+
+        cardGoodSelectWrapper.forEach(item => {
+            item.addEventListener('click', (e) => {
+                const target = e.target;
+
+                 //click - and the list will be opened
+                if (target.closest('.card-good__select')) {
+                    target.classList.toggle('card-good__select__open');
+                }
+
+                //click to element - and the list will be closed
+                if (target.closest('.card-good__select-item')) {
+                    const cardGoodSelect = item.querySelector('.card-good__select');
+                    cardGoodSelect.textContent = target.textContent;
+                    cardGoodSelect.dataset.id = target.dataset.id;
+                    cardGoodSelect.classList.remove('card-good__select__open');
+                }
+            });
+        });
+
+    getGoods(renderCardGood, 'id', hash);
 
 } catch (err) {
     console.warn(err);
