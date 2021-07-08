@@ -8,12 +8,8 @@ let hash = location.hash.substring(1);
 
 //check the localStorage after refreshing the page
 const updateLocation = () => {
-    const localStorageLocation = localStorage.getItem('lomoda-location');
-    
     headerCityButton.textContent = 
-        localStorageLocation && localStorageLocation !== 'null' ? 
-        localStorageLocation : 
-        'Ваш город?';
+        localStorage.getItem('lomoda-location') || 'Ваш город?';
 }
 
 headerCityButton.addEventListener('click', () => {
