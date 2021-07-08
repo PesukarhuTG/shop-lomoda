@@ -4,6 +4,7 @@ const cartOverlay = document.querySelector('.cart-overlay');
 const cartBtnClose = document.querySelector('.cart__btn-close');
 let hash = location.hash.substring(1);
 
+
 /* =============== SET CITY =============================== */
 
 //check the localStorage after refreshing the page
@@ -13,7 +14,7 @@ const updateLocation = () => {
 }
 
 headerCityButton.addEventListener('click', () => {
-    const city = prompt('Укажите ваш город');
+    const city = prompt('Укажите ваш город').trim();
 
     if (city !== null) {
         localStorage.setItem('lomoda-location', city); //save customer's city in local storage
@@ -122,21 +123,11 @@ try {
     //check page
     const goodsList = document.querySelector('.goods__list');
     const goodsTitle = document.querySelector('.goods__title');
-    const navigationLink = document.querySelectorAll('.navigation__link');
+    /*const navigationLink = document.querySelectorAll('.navigation__link');*/
     
     if (!goodsList) {
         throw 'This is not a goods page'
     }
-
-    //change title
-    goodsTitle.textContent = '';
-
-    navigationLink.forEach(item => {
-        item.addEventListener('click', (e) => {
-        goodsTitle.textContent = e.target.textContent;
-        })
-    });
-
 
     //create the element from db
     const createCard = ({ id, preview, cost, brand, name, sizes }) => {
@@ -177,11 +168,23 @@ try {
         
     };
 
+    //change title
+    function changeTitle() {
+        
+        if (hash === 'women') {
+            goodsTitle.textContent = 'Женщинам';
+        } else if (hash === 'men') {
+            goodsTitle.textContent = 'Мужчинам';
+        } else if (hash === 'kids') {
+            goodsTitle.textContent = 'Детям';
+        }
+    };
+
     window.addEventListener('hashchange', () => {
         hash = location.hash.substring(1);
         console.log(hash);
         getGoods(renderGoodsList, hash);
-
+        changeTitle();
     });
 
     getGoods(renderGoodsList, hash);
@@ -189,3 +192,5 @@ try {
 } catch (err) {
     console.warn(err);
 }
+
+changeTitle();
