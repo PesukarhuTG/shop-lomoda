@@ -7,14 +7,25 @@ let hash = location.hash.substring(1);
 /* =============== SET CITY =============================== */
 
 //check the localStorage after refreshing the page
-headerCityButton.textContent = localStorage.getItem('lomoda-location') || 'Ваш город?';
+const updateLocation = () => {
+    const localStorageLocation = localStorage.getItem('lomoda-location');
+    
+    headerCityButton.textContent = 
+        localStorageLocation && localStorageLocation !== 'null' ? 
+        localStorageLocation : 
+        'Ваш город?';
+}
 
 headerCityButton.addEventListener('click', () => {
     const city = prompt('Укажите ваш город');
-    localStorage.setItem('lomoda-location', city); //save customer's city in local storage
-    headerCityButton.textContent = city;
-    
+
+    if (city !== null) {
+        localStorage.setItem('lomoda-location', city); //save customer's city in local storage
+    } 
+    updateLocation();
 });
+
+updateLocation();
 
 /* =============== SCROLL BLOCKED =============================== */
 const disabledScroll = () => {
@@ -29,6 +40,7 @@ const disabledScroll = () => {
         position: fixed;
         top: ${-window.scrollY}px;
         left:0;
+        right:0;
         width: 100%;
         height: 100vh;
         overflow: hidden;
