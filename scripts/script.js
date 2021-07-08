@@ -26,8 +26,13 @@ updateLocation();
 /* =============== SCROLL BLOCKED =============================== */
 const disabledScroll = () => {
 
+    if (document.disableScroll) return;
+
     //find right scroll's width
     const widthScroll = window.innerWidth - document.body.offsetWidth; 
+
+    //set new property disableScroll
+    document.disableScroll = true;
 
     //set new property for Object 'dbScrollY' = how many px the customer scrolled from top
     document.body.dbScrollY = window.scrollY;
@@ -45,6 +50,8 @@ const disabledScroll = () => {
 };
 
 const enabledScroll = () => {
+    document.disableScroll = false;
+
     document.body.style.cssText = '';
     window.scroll({
         top: document.body.dbScrollY,
