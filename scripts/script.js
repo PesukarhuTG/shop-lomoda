@@ -108,9 +108,9 @@ const getGoods = (callback, prop, value) => {
         getData()
         .then(data => {
             if (value) {
-                callback(data.filter(item => item[prop] === value));
+                callback(data.filter(item => item[prop] === value)); 
             } else {
-                callback(data);
+                callback(data); // output all products
             }
         })
         .catch(err => {
@@ -223,7 +223,7 @@ try {
         if (color) {
             cardGoodColor.textContent = color[0];
             cardGoodColor.dataset.id = 0;
-            cardGoodColorList.innerHTML = generateList(color);
+            cardGoodColorList.innerHTML = generateList(color); //generate color list
             } else {
                 cardGoodColor.style.display = 'none';
             }
@@ -231,7 +231,7 @@ try {
         if (sizes) {
             cardGoodSizes.textContent = sizes[0];
             cardGoodSizes.dataset.id = 0;
-            cardGoodSizesList.innerHTML = generateList(sizes);
+            cardGoodSizesList.innerHTML = generateList(sizes); //generate sizes list
             }  else {
                 cardGoodSizes.style.display = 'none';
             }
@@ -251,7 +251,7 @@ try {
                     const cardGoodSelect = item.querySelector('.card-good__select');
                     cardGoodSelect.textContent = target.textContent;
                     cardGoodSelect.dataset.id = target.dataset.id;
-                    cardGoodSelect.classList.remove('card-good__select__open');
+                    cardGoodSelect.classList.remove('card-good__select__open'); //closed list
                 }
             });
         });
