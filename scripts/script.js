@@ -6,6 +6,11 @@ let hash = location.hash.substring(1);
 const cartListGoods = document.querySelector('.cart__list-goods');
 const cartTotalCost = document.querySelector('.cart__total-cost');
 
+// change a word in the cart
+const declOfNum = (n, titles) => {
+    return n + ' ' + titles[n % 10 === 1 && n % 100 !== 11 ?
+        0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2];
+}
 
 /* =============== CREATE CART LIST =============================== */
 const renderCart = () => {
@@ -37,6 +42,7 @@ const deleteItemCart = id => {
     const cartItems = getLocalStorage();
     const newCartItems = cartItems.filter(item => item.id !== id);
     setLocalStorage(newCartItems);
+    updateCountGoodsCard();
 };
 
 cartListGoods.addEventListener('click', (e) => {
@@ -71,6 +77,17 @@ updateLocation();
 const getLocalStorage = () => JSON?.parse(localStorage.getItem('cart-lomoda')) || [];
 const setLocalStorage = (data) => localStorage.setItem('cart-lomoda', JSON.stringify(data));
 
+function updateCountGoodsCard() {
+    if (getLocalStorage().length) {
+        console.log(getLocalStorage().length);
+        subheaderСart.textContent = declOfNum(getLocalStorage().length, ['товар', 'товара', 'товаров']);
+    } else {
+        
+        subheaderСart.textContent = 'Корзина';
+    }
+}
+
+updateCountGoodsCard();
 
 /* =============== SCROLL BLOCKED =============================== */
 
@@ -309,6 +326,7 @@ try {
             const cardData = getLocalStorage();
             cardData.push(data);
             setLocalStorage(cardData);
+            updateCountGoodsCard();
         });
     };
 
